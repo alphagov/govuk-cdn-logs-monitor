@@ -22,14 +22,17 @@ $stdin.each_line do |line|
   status = fragment[-1]
   basepath = fragment[-2]
   if status[0] == "2"
-    if basepath[0..33] != "/government/uploads/system/uploads" # no files
-      data[basepath] += 1
-    end
+    data[basepath] += 1
   end
 end
 
 CSV.open(filename,"w") do |csv|
   data.each do |basepath, count|
+    if basepath.include?("/y/") && count < 100
+      next
+    elsif basepath.include?("?") && count < 100
+      next
+    end
     csv << [basepath, count]
   end
 end
