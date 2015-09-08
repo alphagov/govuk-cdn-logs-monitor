@@ -8,12 +8,16 @@ require 'csv'
 
 data = Hash.new(0)
 
-$stdin.readlines
-  .map(&:split)
-  .map {|line| [line[-1],line[-2]]} # only need the status and the basepath
-  .select {|status,basepath| status[0] = "2"} # all 2XXs
-  .reject {|status,basepath| basepath[0..33] == "/government/uploads/system/uploads"} # no files
-  .each {|status,basepath| data[basepath] += 1}
+$stdin.each_line do |line|
+  fragment = line.split
+  status = fragment[-1]
+  basepath = fragment[-2]
+  if status[0] == "2"
+    if basepath[0..33] != "/government/uploads/system/uploads" # no files
+      data[basepath] += 1
+    end
+  end
+end
 
 CSV.open("out.csv","w") do |csv|
   data.each do |basepath, count|
