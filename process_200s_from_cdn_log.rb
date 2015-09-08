@@ -11,7 +11,7 @@ data = Hash.new(0)
 $stdin.readlines
   .map(&:split)
   .map {|line| [line[-1],line[-2]]} # only need the status and the basepath
-  .select {|status,basepath| status == "200"} # all 200s
+  .select {|status,basepath| status[0] = "2"} # all 2XXs
   .reject {|status,basepath| basepath[0..33] == "/government/uploads/system/uploads"} # no files
   .each {|status,basepath| data[basepath] += 1}
 
