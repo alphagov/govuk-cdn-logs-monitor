@@ -6,24 +6,29 @@
 require 'pp'
 require 'csv'
 
-data = Hash.new(0)
+filename = ARGV[0]
+if File.exists?(filename)
+  raise "File already exists"
+end
 
+data = Hash.new(0)
 $stdin.each_line do |line|
   begin
     fragment = line.split
-    status = fragment[-1]
-    basepath = fragment[-2]
-    if status[0] == "2"
-      if basepath[0..33] != "/government/uploads/system/uploads" # no files
-        data[basepath] += 1
-      end
-    end
   rescue ArgumentError
     next
   end
+
+  status = fragment[-1]
+  basepath = fragment[-2]
+  if status[0] == "2"
+    if basepath[0..33] != "/government/uploads/system/uploads" # no files
+      data[basepath] += 1
+    end
+  end
 end
 
-CSV.open("out.csv","w") do |csv|
+CSV.open(filename,"w") do |csv|
   data.each do |basepath, count|
     csv << [basepath, count]
   end
