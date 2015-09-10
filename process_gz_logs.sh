@@ -1,7 +1,8 @@
-# accept an output directory to store the processed logs
-outdirectory=$1
+# accept a source and output directory to get and store the processed logs
+srcdirectory=$1
+outdirectory=$2
 
-for f in *.gz; do
+for f in $srcdirectory/*.gz; do
     # expect name to be formatted: cdn-govuk.log-YYYYMMDD.gz
     # extract YYYYMMDD part of zipped file name
     outfile=$(echo $f | awk -F- '{print $3}' | awk -F. '{print $1}')
