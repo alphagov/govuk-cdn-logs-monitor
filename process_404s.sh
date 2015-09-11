@@ -1,10 +1,7 @@
 #!/bin/sh
 
 read file
-
 # -F handles log rotations
 # -c +0 outputs the entire file (not just last ten lines)
-tail -F -c +0 $file | awk '{if ($12=="404") print $11}'
-
-# pipe output from awk and compare with the known good file of urls
-# if it matches: alert
+# -c -0 watches the very end of the file
+tail -F -c +0 "$file" | ruby alert_if_404_url_present.rb

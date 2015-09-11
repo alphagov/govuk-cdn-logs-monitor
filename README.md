@@ -19,7 +19,7 @@ See <https://gov-uk.atlassian.net/wiki/display/FS/RFC+21%3A+Monitoring+for+404s>
 
 # To do
 
-1. stream 'live' cdn data and look for 404s. compare against known 200s. alert.
-2. given two output files, produce the intersection: find the common basepaths
-
+* stream 'live' cdn data and look for 404s. compare against known 200s. alert.
+* given an output file of 2XXs and the master list, combine the results (and counts)
+* Need to add tests for the scripts
 ...
