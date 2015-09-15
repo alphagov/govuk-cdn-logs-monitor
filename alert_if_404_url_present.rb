@@ -7,7 +7,7 @@ CSV.foreach(masterlist, 'r') do |row| # assume each line sorted by basepath
   known_good << row[0]
 end
 
-while line = gets do
+$stdin.each_line do |line|
   begin
     fragment = line.split
   rescue ArgumentError # weird characters in url
