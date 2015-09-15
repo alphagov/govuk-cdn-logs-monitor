@@ -5,9 +5,9 @@ srcdirectory="${1}"
 outdirectory="${2}"
 
 # find the newest file
-infile=$(ls "$srcdirectory" | sort -n -t _ -k 2 | tail -1)
+infile=$(ls -1tr "$srcdirectory" | tail -1)
 
-# expect name to be formatted: cdn-govuk.log-YYYYMMDD.gz
+# expect name to be formatted: cdn-govuk.log-YYYYMMDD
 # extract YYYYMMDD part of newest file
 outfile=$(echo "$infile" | awk '{print $4}' FS='-|\\.')
 
