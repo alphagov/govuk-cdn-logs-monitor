@@ -1,7 +1,9 @@
 require './config'
 
+masterlist = ARGV[0]
+
 known_good = []
-CSV.foreach("masterlist.csv", 'r') do |row| # assume each line sorted by basepath
+CSV.foreach(masterlist, 'r') do |row| # assume each line sorted by basepath
   known_good << row[0]
 end
 

@@ -24,4 +24,3 @@ def commit_changes(masterlist)
   g.commit("#{Date.today} updates to masterlist")
   g.push
 end
-
