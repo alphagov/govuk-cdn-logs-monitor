@@ -3,8 +3,7 @@
 
 # process the cdn log for 200s that are pages on gov.uk, not files (eg, pdf, odt)
 
-require 'pp'
-require 'csv'
+require './config'
 
 filename = ARGV[0]
 if File.exists?(filename)

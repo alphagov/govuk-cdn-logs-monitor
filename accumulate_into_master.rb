@@ -1,4 +1,4 @@
-require 'csv'
+require './config'
 
 masterlist = ARGV[0]
 _200s_directory = ARGV[1]
@@ -35,3 +35,5 @@ CSV.open(masterlist, 'w') do |csv|
     csv << [k, v]
   end
 end
+
+commit_changes(masterlist)
