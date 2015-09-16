@@ -18,3 +18,5 @@ Monitor the CDN logs for GOV.UK to find problems with the site
 
 `./accumulate.sh /src/log/directory /path/to/masterlist.csv`
 * takes urls that are known to be good and adds them to the masterlist
+
+![CDN monitor process flow](docs/cdn-monitor-flow.png)
