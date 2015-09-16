@@ -1,7 +1,7 @@
 require './config'
 
-masterlist = ARGV[0]
-_200s_directory = ARGV[1]
+_200s_directory = ARGV[0]
+masterlist = ARGV[1]
 accumulator = []
 
 # read in current master list
