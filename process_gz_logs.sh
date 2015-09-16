@@ -14,6 +14,6 @@ for f in $srcdirectory/*.gz; do
         echo "$outdirectory/$outfile.csv already exists"
     else
         echo "creating $outdirectory/$outfile.csv"
-        gunzip "$f" -c | ruby process_200s_from_cdn_log.rb "$outdirectory/$outfile.csv"
+        gunzip "$f" -c | ruby lib/process_200s_from_cdn_log.rb "$outdirectory/$outfile.csv"
     fi
 done

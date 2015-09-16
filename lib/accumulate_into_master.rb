@@ -1,4 +1,4 @@
-require './config'
+require_relative 'config'
 
 _200s_directory = ARGV[0]
 masterlist = ARGV[1]

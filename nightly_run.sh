@@ -12,4 +12,4 @@ infile=$(ls -1tr "$srcdirectory" | tail -1)
 outfile=$(echo "$infile" | awk '{print $4}' FS='-|\\.')
 
 echo "This process is creating $outdirectory/$outfile.csv"
-ruby process_200s_from_cdn_log.rb "$outdirectory/$outfile.csv" < "$srcdirectory/$infile"
+ruby lib/process_200s_from_cdn_log.rb "$outdirectory/$outfile.csv" < "$srcdirectory/$infile"

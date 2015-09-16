@@ -1,4 +1,4 @@
-require './config'
+require_relative 'config'
 
 masterlist = ARGV[0]
 

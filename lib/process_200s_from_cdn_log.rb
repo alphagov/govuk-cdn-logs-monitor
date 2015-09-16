@@ -1,9 +1,8 @@
 # coding: utf-8
-# Work in progress
 
 # process the cdn log for 200s that are pages on gov.uk, not files (eg, pdf, odt)
 
-require './config'
+require_relative 'config'
 
 filename = ARGV[0]
 if File.exists?(filename)
