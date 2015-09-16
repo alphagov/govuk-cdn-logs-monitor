@@ -6,7 +6,7 @@ require 'git'
 def register_404
   s = Statsd.new("localhost")
   s.namespace = ENV["GOVUK_STATSD_PREFIX"]
-  s.increment('404')
+  s.increment("govuk_cdn.404")
 end
 
 def date(log_line)
