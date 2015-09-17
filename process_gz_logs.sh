@@ -7,7 +7,7 @@ outdirectory="${2}"
 for f in $srcdirectory/*.gz; do
     # expect name to be formatted: cdn-govuk.log-YYYYMMDD.gz
     # extract YYYYMMDD part of zipped file name
-    outfile=$(echo "$f" | awk '{print $4}' FS='-|\\.')
+    outfile=$(basename "$f" | awk '{print $4}' FS='-|\\.')
 
     # stop processing this file if the output already exists
     if [ -f "$outdirectory/$outfile.csv" ]; then
