@@ -18,10 +18,7 @@ $stdin.each_line do |line|
   _404_path = fragment[-2]
   if known_good.any? {|x| x == _404_path}
     register_404
-    result = { url: _404_path, method: fragment[-3],
-               time: time(fragment), date: date(fragment)
-             }
-    puts JSON.generate(result)
+    $stdout.puts logstash_format_json(fragment)
     next
   end
 end
