@@ -1,5 +1,21 @@
 #!/bin/sh
 
+usage="\nExample usage:
+  $(basename "$0") -h
+  $(basename "$0") log-directory masterfile
+
+where:
+  -h             show this help text
+  log-directory  directory where the cdn log is currently being written
+  masterfile     path to the file containing the known good urls on gov.uk\n"
+
+option="${1}"
+
+if [ "$option" = "-h" ] || [ "$option" = "" ]; then
+    echo "$usage"
+    exit 0
+fi
+
 srcdirectory="${1}"
 masterfile="${2}"
 
