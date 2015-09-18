@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# process the cdn log for 200s that are pages on gov.uk, not files (eg, pdf, odt)
+# process the cdn log for 200s on gov.uk
 
 require_relative 'config'
 
@@ -10,6 +10,8 @@ if File.exists?(filename)
 end
 
 data = Hash.new(0)
+# the cdn log line is expected to be in the following format
+# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS
 $stdin.each_line do |line|
   begin
     fragment = line.split
@@ -26,8 +28,10 @@ end
 
 CSV.open(filename,"w") do |csv|
   data.each do |basepath, count|
+    # smart answer basepaths can include personal information
     if basepath.include?("/y/") && count < 100
       next
+    # search query parameters can include personal information
     elsif basepath.include?("?") && count < 100
       next
     end

@@ -1,6 +1,9 @@
 require_relative 'config'
 
-_200s_directory = ARGV[0]
+# add basepaths from the processed csv files into the masterlist
+# all basepaths in the masterlist should never 404
+
+csv_directory = ARGV[0]
 masterlist = ARGV[1]
 accumulator = []
 
@@ -9,21 +12,18 @@ CSV.foreach(masterlist, 'r') do |row|
   accumulator << row[0]
 end
 
-day_zeroes = Dir["#{_200s_directory}/*.csv"]
+day_zeroes = Dir["#{csv_directory}/*.csv"]
 week_later = day_zeroes[7..-1] || []
 
 # intersection of urls 1 week apart get added to the masterlist
-day_zeroes.zip(week_later).each do |start,_end|
-  if _end.nil?
-    break
-  end
+week_later.zip(day_zeroes).each do |finish, start|
   a = []; CSV.foreach(start,'r') do |row|
     a << row[0]
   end
-  b = []; CSV.foreach(_end,'r') do |row|
+  b = []; CSV.foreach(finish,'r') do |row|
     b << row[0]
   end
-  accumulator += (a & b)
+  accumulator += (a & b) # append the common basepaths
 end
 
 # write out updated master list
