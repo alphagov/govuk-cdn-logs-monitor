@@ -35,5 +35,3 @@ CSV.open(masterlist, 'w') do |csv|
     csv << [k, v]
   end
 end
-
-commit_changes(masterlist)
