@@ -13,7 +13,7 @@ CSV.foreach(masterlist, 'r') do |row|
 end
 
 day_zeroes = Dir["#{csv_directory}/*.csv"]
-week_later = day_zeroes[7..-1] || []
+week_later = day_zeroes[interval()..-1] || []
 
 # intersection of urls 1 week apart get added to the masterlist
 week_later.zip(day_zeroes).each do |finish, start|

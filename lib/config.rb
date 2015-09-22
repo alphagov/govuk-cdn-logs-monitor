@@ -4,6 +4,10 @@ require 'uri'
 require 'statsd-ruby'
 require 'git'
 
+def interval
+  @csv_interval ||= (ENV['CSV_INTERVAL'].to_i || 7)
+end
+
 # the cdn log line is expected to be in the following format
 # IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS
 def time(logline)
@@ -29,7 +33,8 @@ def logstash_format_json(logline)
 end
 
 def register_404
-  s = Statsd.new("localhost")
+  port = ENV['STATSDPORT'] || 8125
+  s = Statsd.new("localhost", port)
   s.namespace = ENV["GOVUK_STATSD_PREFIX"]
   s.increment("govuk_cdn.404")
 end
