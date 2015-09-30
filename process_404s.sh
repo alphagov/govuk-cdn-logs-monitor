@@ -1,31 +1,38 @@
 #!/bin/sh
 
-usage="\nExample usage:
+usage="
+Example usage:
   $(basename "$0") -h
-  $(basename "$0") log-directory masterfile
+  $(basename "$0") [log-file [good-urls]]
 
 where:
-  -h             show this help text
-  log-directory  directory where the cdn log is currently being written
-  masterfile     path to the file containing the known good urls on gov.uk\n"
+  -h         show this help text
+  log-file   path to the file where the cdn log is currently being written
+  good-urls  path to the file containing the known good urls on GOV.UK
+"
 
 option="${1}"
 
-if [ "$option" = "-h" ] || [ "$option" = "" ]; then
+if [ "$option" = "-h" ]; then
     echo "$usage"
     exit 0
 fi
 
-srcdirectory="${1}"
-masterfile="${2}"
+srcfile="${1}"
+if [ -z "${srcfile}" ]; then
+    srcfile="${GOVUK_CDN_LOG_FILE}"
+fi
 
-srcfile=$(find "$srcdirectory/cdn-govuk.log")
+good_urls="${2}"
+if [ -z "${good_urls}" ]; then
+    good_urls="${GOVUK_GOOD_URLS_FILE}"
+fi
 
 # -F handles log rotations
 # -c +0 outputs the entire file (not just last ten lines)
 # -c -0 watches the very end of the file
-if [ $? -eq 0 ]; then
-    tail -F -c -0 "$srcfile" | ruby lib/alert_if_404_url_present.rb "$masterfile"
+if [ -e "${srcfile}" ]; then
+    tail -F -c -0 "${srcfile}" | bundle exec ruby lib/alert_if_404_url_present.rb "${good_urls}"
 else
-    echo "$srcdirectory/cdn-govuk.log not found"
+    echo "${srcfile} not found"
 fi
