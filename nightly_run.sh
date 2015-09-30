@@ -20,8 +20,8 @@ fi
 srcdirectory="${1}"
 outdirectory="${2}"
 
-# find the newest file
-infile=$(ls -1tr $srcdirectory/cdn-govuk.log-* | tail -1)
+# find the newest uncompressed file
+infile=$(ls -1tr $srcdirectory/cdn-govuk.log-* | grep -v .gz | tail -1)
 
 # expect name to be formatted: cdn-govuk.log-YYYYMMDD
 # extract YYYYMMDD part of newest file
