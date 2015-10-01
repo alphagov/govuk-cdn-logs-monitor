@@ -18,9 +18,13 @@ if [ "$option" = "-h" ]; then
     exit 0
 fi
 
-srcfile="${1}"
-if [ -z "${srcfile}" ]; then
-    srcfile="${GOVUK_CDN_LOG_FILE}"
+logfile="${1}"
+if [ -z "${logfile}" ]; then
+    logfile="${GOVUK_CDN_LOG_FILE}"
+fi
+if [ ! -e "${logfile}" ]; then
+    echo "${logfile} not found"
+    exit 1
 fi
 
 good_urls="${2}"
@@ -31,8 +35,9 @@ fi
 # -F handles log rotations
 # -c +0 outputs the entire file (not just last ten lines)
 # -c -0 watches the very end of the file
-if [ -e "${srcfile}" ]; then
-    tail -F -c -0 "${srcfile}" | bundle exec ruby lib/alert_if_404_url_present.rb "${good_urls}"
-else
-    echo "${srcfile} not found"
+if [ ! -e "${good_urls}" ]; then
+    echo "${good_urls} not found"
+    exit 1
 fi
+
+tail -F -c -0 "${logfile}" | bundle exec ruby lib/alert_if_404_url_present.rb "${good_urls}"

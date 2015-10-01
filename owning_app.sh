@@ -1,12 +1,14 @@
 #!/bin/sh
 
-usage="\nExample usage:
+usage="
+Example usage:
   $(basename "$0") -h
   $(basename "$0") basepath
 
 where:
   -h        show this help text
-  basepath  part of the gov.uk url, eg: /browse, /government/announcements\n"
+  basepath  part of the GOV.UK url, eg: /browse, /government/announcements
+"
 
 option="${1}"
 
