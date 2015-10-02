@@ -31,10 +31,6 @@ good_urls="${2}"
 if [ -z "${good_urls}" ]; then
     good_urls="${GOVUK_GOOD_URLS_FILE}"
 fi
-
-# -F handles log rotations
-# -c +0 outputs the entire file (not just last ten lines)
-# -c -0 watches the very end of the file
 if [ ! -e "${good_urls}" ]; then
     echo "${good_urls} not found"
     exit 1

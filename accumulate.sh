@@ -3,12 +3,12 @@
 usage="
 Example usage:
   $(basename "$0") -h
-  $(basename "$0") [csv-directory [good-urls]]
+  $(basename "$0") [processed-data [good-urls]]
 
 where:
-  -h             show this help text
-  csv-directory  path to the directory where processed csv files are stored
-  good-urls      path to the file containing the known good urls on GOV.UK
+  -h              show this help text
+  processed-data  path to the directory where processed data files are stored
+  good-urls       path to the file containing the known good urls on GOV.UK
 "
 
 option="${1}"
@@ -18,12 +18,12 @@ if [ "$option" = "-h" ]; then
     exit 0
 fi
 
-csvdir="${1}"
-if [ -z "${csvdir}" ]; then
-    csvdir="${GOVUK_CDN_CSV_DIR}"
+processeddata="${1}"
+if [ -z "${processeddata}" ]; then
+    processeddata="${GOVUK_CDN_PROCESSED_DATA_DIR}"
 fi
-if [ ! -e "${csvdir}" ]; then
-    echo "${csvdir} not found"
+if [ ! -e "${processeddata}" ]; then
+    echo "${processeddata} not found"
     exit 1
 fi
 
@@ -36,4 +36,4 @@ if [ ! -e "${good_urls}" ]; then
     exit 1
 fi
 
-bundle exec ruby lib/accumulate_into_master.rb "${csvdir}" "${good_urls}"
+bundle exec ruby lib/accumulate_into_master.rb "${processeddata}" "${good_urls}"

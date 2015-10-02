@@ -3,12 +3,12 @@
 usage="
 Example usage:
   $(basename "$0") -h
-  $(basename "$0") [log-directory [csv-directory]]
+  $(basename "$0") [log-directory [processed-data]]
 
 where:
-  -h             show this help text
-  log-directory  path to the directory where the compressed logs are stored
-  csv-directory  path to the directory where the processed csv files are stored
+  -h              show this help text
+  log-directory   path to the directory where the compressed logs are stored
+  processed-data  path to the directory where the processed csv files are stored
 "
 
 option="${1}"
@@ -28,25 +28,27 @@ if [ ! -e "${logdir}" ]; then
     exit 1
 fi
 
-csvdir="${2}"
-if [ -z "${csvdir}" ]; then
-    csvdir="${GOVUK_CDN_CSV_DIR}"
+processeddata="${2}"
+if [ -z "${processeddata}" ]; then
+    processeddata="${GOVUK_CDN_PROCESSED_DATA_DIR}"
 fi
-if [ ! -e "${csvdir}" ]; then
-    echo "${csvdir} not found"
+if [ ! -e "${processeddata}" ]; then
+    echo "${processeddata} not found"
     exit 1
 fi
 
 for f in $logdir/*.gz; do
     # expect name to be formatted: cdn-govuk.log-YYYYMMDD.gz
     # extract YYYYMMDD part of zipped file name
-    outfile=$(basename "$f" | awk '{print $4}' FS='-|\\.')
+    day=$(basename "${f}" | awk '{print $4}' FS='-|\\.')
+
+    outfile="${processeddata}/${day}.csv"
 
     # stop processing this file if the output already exists
-    if [ -f "$csvdir/$outfile.csv" ]; then
-        echo "$csvdir/$outfile.csv already exists"
+    if [ -f "${outfile}" ]; then
+        echo "${outfile} already exists"
     else
-        echo "creating $csvdir/$outfile.csv"
-        gunzip "$f" -c | ruby lib/process_200s_from_cdn_log.rb "$csvdir/$outfile.csv"
+        echo "creating ${outfile}"
+        gunzip "$f" -c | ruby lib/process_200s_from_cdn_log.rb "${outfile}"
     fi
 done

@@ -3,12 +3,12 @@
 usage="
 Example usage:
   $(basename "$0") -h
-  $(basename "$0") [log-directory [csv-directory]]
+  $(basename "$0") [log-directory [processed-data]]
 
 where:
-  -h             show this help text
-  log-directory  path to the directory where the uncompressed daily log is stored
-  csv-directory  path to the directory where the processed csv files are stored
+  -h              show this help text
+  log-directory   path to the directory where the uncompressed daily log is stored
+  processed-data  path to the directory where the processed data files are stored
 "
 
 option="${1}"
@@ -24,20 +24,21 @@ infile=$(ls -1tr $logdir/cdn-govuk.log-* | grep -v .gz | tail -1)
 
 # expect name to be formatted: cdn-govuk.log-YYYYMMDD
 # extract YYYYMMDD part of newest file
-outfile=$(basename "$infile" | awk '{print $4}' FS='-|\\.')
-if [ -z "${outfile}" ]; then
+day=$(basename "$infile" | awk '{print $4}' FS='-|\\.')
+if [ -z "${day}" ]; then
     echo "Date not found. Can't create output csv."
     exit 1
 fi
 
-csvdir="${2}"
-if [ -z "${csvdir}" ]; then
-    csvdir="${GOVUK_CDN_CSV_DIR}"
+processeddata="${2}"
+if [ -z "${processeddata}" ]; then
+    processeddata="${GOVUK_CDN_PROCESSED_DATA_DIR}"
 fi
-if [ ! -e "${csvdir}" ]; then
-    echo "${csvdir} not found"
+if [ ! -e "${processeddata}" ]; then
+    echo "${processeddata} not found"
     exit 1
 fi
 
-echo "This process is creating $csvdir/$outfile.csv"
-ruby lib/process_200s_from_cdn_log.rb "$csvdir/$outfile.csv" < "$infile"
+outfile="${processeddata}/${day}.csv"
+echo "This process is creating ${outfile}"
+ruby lib/process_200s_from_cdn_log.rb "${outfile}" < "${infile}"
