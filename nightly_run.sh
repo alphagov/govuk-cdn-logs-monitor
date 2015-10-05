@@ -20,6 +20,14 @@ fi
 
 # find the newest uncompressed file from the log directory
 logdir="${1}"
+if [ -z "${logdir}" ]; then
+    logdir="${GOVUK_CDN_LOG_DIR}"
+fi
+if [ ! -e "${logdir}" ]; then
+    echo "${logdir} not found"
+    exit 1
+fi
+
 infile=$(ls -1tr $logdir/cdn-govuk.log-* | grep -v .gz | tail -1)
 
 # expect name to be formatted: cdn-govuk.log-YYYYMMDD
