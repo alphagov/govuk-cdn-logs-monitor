@@ -20,7 +20,7 @@ fi
 
 processeddata="${1}"
 if [ -z "${processeddata}" ]; then
-    processeddata="${GOVUK_CDN_PROCESSED_DATA_DIR}"
+    processeddata="${GOVUK_PROCESSED_DATA_DIR}"
 fi
 if [ ! -e "${processeddata}" ]; then
     echo "${processeddata} not found"
