@@ -8,7 +8,9 @@ Example usage:
 where:
   -h              show this help text
   log-directory   path to the directory where the uncompressed daily log is stored
+                  defaults to $GOVUK_CDN_LOG_DIR environment variable
   processed-data  path to the directory where the processed data files are stored
+                  defaults to $GOVUK_PROCESSED_DATA_DIR environment variable
 "
 
 option="${1}"
@@ -49,4 +51,4 @@ fi
 
 outfile="${processeddata}/${day}.csv"
 echo "This process is creating ${outfile}"
-ruby lib/process_200s_from_cdn_log.rb "${outfile}" < "${infile}"
+bundle exec ruby lib/process_200s_from_cdn_log.rb "${outfile}" < "${infile}"

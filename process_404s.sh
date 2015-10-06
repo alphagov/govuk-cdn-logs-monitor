@@ -8,7 +8,9 @@ Example usage:
 where:
   -h         show this help text
   log-file   path to the file where the cdn log is currently being written
+             defaults to $GOVUK_CDN_LOG_FILE environment variable
   good-urls  path to the file containing the known good urls on GOV.UK
+             defaults to $GOVUK_GOOD_URLS_FILE environment variable
 "
 
 option="${1}"

@@ -8,7 +8,9 @@ Example usage:
 where:
   -h              show this help text
   processed-data  path to the directory where processed data files are stored
+                  defaults to $GOVUK_PROCESSED_DATA_DIR environment variable
   good-urls       path to the file containing the known good urls on GOV.UK
+                  defaults to $GOVUK_GOOD_URLS_FILE environment variable
 "
 
 option="${1}"
