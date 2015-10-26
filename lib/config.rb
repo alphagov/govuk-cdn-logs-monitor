@@ -42,10 +42,14 @@ def logstash_format_json(logline)
 end
 
 def register_404
+  increment_counter("govuk_cdn.404")
+end
+
+def increment_counter(counter_name)
   port = ENV['STATSDPORT'] || 8125
   s = Statsd.new("localhost", port)
   s.namespace = ENV["GOVUK_STATSD_PREFIX"]
-  s.increment("govuk_cdn.404")
+  s.increment(counter_name)
 end
 
 def commit_changes(masterlist)
