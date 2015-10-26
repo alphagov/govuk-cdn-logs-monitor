@@ -4,6 +4,8 @@ require 'uri'
 require 'statsd-ruby'
 require 'git'
 
+VALID_CDN_FAILOVERS = %w(stale mirror0 mirror1 force_ssl error)
+
 def interval
   @csv_interval ||= (ENV['CSV_INTERVAL'].to_i || 7)
 end
@@ -39,6 +41,12 @@ def logstash_format_json(logline)
     "@timestamp"=>DateTime.parse(parsed_logline[:time]),
     "@version"=>"1"
   })
+end
+
+def register_backend_hit(backend_name)
+  if VALID_CDN_FAILOVERS.include? backend_name
+    increment_counter("govuk_cdn.backends.#{backend_name}")
+  end
 end
 
 def register_404
