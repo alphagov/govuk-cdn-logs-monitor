@@ -9,22 +9,22 @@ def interval
 end
 
 # the cdn log line is expected to be in the following format
-# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS
+# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS BACKEND
 def time(logline)
-  DateTime.parse(logline[-8..-4].join(" "))
+  DateTime.parse(logline[-9..-5].join(" "))
 end
 
 def logstash_format_json(logline)
-  uri = URI.parse("https://www.gov.uk#{logline[-2]}")
+  uri = URI.parse("https://www.gov.uk#{logline[-3]}")
   JSON.generate({
     "@fields"=> {
-      "method"=>logline[-3],
+      "method"=>logline[-4],
       "path"=>uri.path,
       "query_string"=>uri.query,
       "status"=>404,
       "duration"=>0,
       "remote_addr"=>logline[0],
-      "request"=>"#{logline[-3]} #{logline[-2]}",
+      "request"=>"#{logline[-4]} #{logline[-3]}",
       "length"=>"-"},
     "@tags"=>["request"],
     "@timestamp"=>time(logline),
