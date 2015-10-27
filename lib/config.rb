@@ -10,24 +10,33 @@ end
 
 # the cdn log line is expected to be in the following format
 # IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS BACKEND
-def time(logline)
-  DateTime.parse(logline[-9..-5].join(" "))
+def parse_logline(logline)
+  lines = logline.split(' ')
+  return {
+    ip: lines[0],
+    time: lines[-9..-5].join(" "),
+    method: lines[9],
+    path: lines[10],
+    status: lines[11],
+    backend: lines[12],
+  }
 end
 
 def logstash_format_json(logline)
-  uri = URI.parse("https://www.gov.uk#{logline[-3]}")
+  parsed_logline = parse_logline(logline)
+  uri = URI.parse("https://www.gov.uk#{parsed_logline[:path]}")
   JSON.generate({
     "@fields"=> {
-      "method"=>logline[-4],
+      "method"=>parsed_logline[:method],
       "path"=>uri.path,
       "query_string"=>uri.query,
       "status"=>404,
       "duration"=>0,
-      "remote_addr"=>logline[0],
-      "request"=>"#{logline[-4]} #{logline[-3]}",
+      "remote_addr"=>parsed_logline[:ip],
+      "request"=>"#{parsed_logline[:method]} #{parsed_logline[:path]}",
       "length"=>"-"},
     "@tags"=>["request"],
-    "@timestamp"=>time(logline),
+    "@timestamp"=>DateTime.parse(parsed_logline[:time]),
     "@version"=>"1"
   })
 end

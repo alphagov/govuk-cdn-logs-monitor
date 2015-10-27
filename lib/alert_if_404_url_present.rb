@@ -11,20 +11,14 @@ CSV.foreach(masterlist, 'r') do |row| # assume each line sorted by basepath
   known_good << row[0]
 end
 
-# the cdn log line is expected to be in the following format
-# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS BACKEND
 $stdin.each_line do |line|
-  begin
-    fragment = line.split
-  rescue ArgumentError # weird characters in url
-    next
-  end
-  next if fragment[-2] != "404"
+  parsed_logline = parse_logline(line)
+  next if parsed_logline[:status] != "404"
 
-  path_of_404 = fragment[-3]
+  path_of_404 = parsed_logline[:path]
   if known_good.include?(path_of_404)
     register_404
-    $stdout.puts logstash_format_json(fragment)
+    $stdout.puts logstash_format_json(line)
     next
   end
 end

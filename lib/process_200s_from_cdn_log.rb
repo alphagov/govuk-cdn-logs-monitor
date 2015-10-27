@@ -10,17 +10,11 @@ if File.exists?(filename)
 end
 
 data = Hash.new(0)
-# the cdn log line is expected to be in the following format
-# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS BACKEND
 $stdin.each_line do |line|
-  begin
-    fragment = line.split
-  rescue ArgumentError
-    next
-  end
+  parsed_logline = parse_logline(line)
 
-  status = fragment[-2]
-  basepath = fragment[-3]
+  status = parsed_logline[:status]
+  basepath = parsed_logline[:path]
   if status[0] == "2"
     data[basepath] += 1
   end
