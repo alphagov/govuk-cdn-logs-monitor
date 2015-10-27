@@ -1,2 +1,2 @@
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:01 GMT GET /calculate-state-pension/y/amount/male/1970-01-01/20/0/no 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:02 GMT GET /search?q=personal+information+in+search 200
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:01 GMT GET /calculate-state-pension/y/amount/male/1970-01-01/20/0/no 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:02 GMT GET /search?q=personal+information+in+search 200 origin

@@ -4,39 +4,60 @@ require 'uri'
 require 'statsd-ruby'
 require 'git'
 
+VALID_CDN_FAILOVERS = %w(stale mirror0 mirror1 force_ssl error)
+
 def interval
   @csv_interval ||= (ENV['CSV_INTERVAL'].to_i || 7)
 end
 
 # the cdn log line is expected to be in the following format
-# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS
-def time(logline)
-  DateTime.parse(logline[-8..-4].join(" "))
+# IP "-" "-" ... DD MMM YYYY TIME ZONE METHOD BASEPATH STATUS BACKEND
+def parse_logline(logline)
+  lines = logline.split(' ')
+  return {
+    ip: lines[0],
+    time: lines[3..8].join(" "),
+    method: lines[9],
+    path: lines[10],
+    status: lines[11],
+    backend: lines[12],
+  }
 end
 
 def logstash_format_json(logline)
-  uri = URI.parse("https://www.gov.uk#{logline[-2]}")
+  parsed_logline = parse_logline(logline)
+  uri = URI.parse("https://www.gov.uk#{parsed_logline[:path]}")
   JSON.generate({
     "@fields"=> {
-      "method"=>logline[-3],
+      "method"=>parsed_logline[:method],
       "path"=>uri.path,
       "query_string"=>uri.query,
       "status"=>404,
       "duration"=>0,
-      "remote_addr"=>logline[0],
-      "request"=>"#{logline[-3]} #{logline[-2]}",
+      "remote_addr"=>parsed_logline[:ip],
+      "request"=>"#{parsed_logline[:method]} #{parsed_logline[:path]}",
       "length"=>"-"},
     "@tags"=>["request"],
-    "@timestamp"=>time(logline),
+    "@timestamp"=>DateTime.parse(parsed_logline[:time]),
     "@version"=>"1"
   })
 end
 
+def register_backend_hit(backend_name)
+  if VALID_CDN_FAILOVERS.include? backend_name
+    increment_counter("govuk_cdn.backends.#{backend_name}")
+  end
+end
+
 def register_404
+  increment_counter("govuk_cdn.404")
+end
+
+def increment_counter(counter_name)
   port = ENV['STATSDPORT'] || 8125
   s = Statsd.new("localhost", port)
   s.namespace = ENV["GOVUK_STATSD_PREFIX"]
-  s.increment("govuk_cdn.404")
+  s.increment(counter_name)
 end
 
 def commit_changes(masterlist)

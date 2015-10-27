@@ -1,7 +1,7 @@
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:01 GMT GET /view-driving-licence 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:02 GMT GET /make-a-sorn 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:03 GMT GET /make-a-sorn 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:04 GMT GET /make-a-sorn 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:05 GMT GET /view-driving-licence 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:06 GMT GET /view-driving-licence 200
-192.168.0.1 "-" "-" 01 Jan 2016 00:00:07 GMT GET /make-a-sorn 200
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:01 GMT GET /view-driving-licence 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:02 GMT GET /make-a-sorn 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:03 GMT GET /make-a-sorn 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:04 GMT GET /make-a-sorn 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:05 GMT GET /view-driving-licence 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:06 GMT GET /view-driving-licence 200 origin
+192.168.0.1 "-" "-" Fri, 01 Jan 2016 00:00:07 GMT GET /make-a-sorn 200 origin
