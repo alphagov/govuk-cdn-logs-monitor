@@ -16,7 +16,7 @@ def parse_logline(logline)
   lines = logline.split(' ')
   return {
     ip: lines[0],
-    time: lines[-9..-5].join(" "),
+    time: lines[3..8].join(" "),
     method: lines[9],
     path: lines[10],
     status: lines[11],
