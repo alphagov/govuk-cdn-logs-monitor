@@ -1,0 +1,27 @@
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 05:57:23 GMT GET /another/url 200 stale
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 05:57:24 GMT GET /a-url-accessed-twice 200
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 05:57:25 GMT GET /a-failing-url 500
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 05:57:26 GMT GET /a-missing-url 404
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 05:57:27 GMT GET /a-redirected-url 301
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 GET /a-url 301
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 GET /a-url-with-an-accént 200
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 HEAD /a-url-accessed-with-head 200
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 POST /a-url-accessed-with-post 200
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 PUT /a-url-accessed-with-put 200
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 GET /a-url 404
+1.1.1.1 "-" "-" Fri, 22 Aug 2015 10:57:28 +0100 GET /a-url 500
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:21 GMT GET /a-url 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:22 GMT GET /a-url-accessed-twice 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:23 GMT GET /another/url 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:24 GMT GET /a-url-accessed-twice 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:25 GMT GET /a-failing-url 500
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:26 GMT GET /a-missing-url 404
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:26 GMT GET /a-test 201
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 05:57:27 GMT GET /a-redirected-url 301
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 GET /a-url 301
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 GET /a-url-with-an-accént 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 HEAD /a-url-accessed-with-head 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 POST /a-url-accessed-with-post 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 PUT /a-url-accessed-with-put 200
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 GET /a-url 404
+1.1.1.1 "-" "-" Fri, 23 Aug 2015 10:57:28 +0100 GET /a-url 500
