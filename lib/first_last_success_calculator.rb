@@ -25,21 +25,23 @@ class FirstLastSuccessCalculator
 private
 
   def current_daily_files_and_sizes
-    @current_daily_files_and_sizes ||=
-    Dir["#{daily_successes_dir}/successes_*"].each_with_object({}) { |path, result|
-      result[path] = File.size(path)
-    }
+    @current_daily_files_and_sizes ||= begin
+      Dir["#{daily_successes_dir}/successes_*"].each_with_object({}) { |path, result|
+        result[path] = File.size(path)
+      }
+    end
   end
 
   def stored_daily_files_and_sizes
-    @stored_daily_files_and_sizes ||=
-    if File.exists? first_last_sources_file
-      File.readlines(first_last_sources_file).each_with_object({}) { |line, result|
-        path, stored_size = line.strip.split(/ /, 2)
-        result[path] = stored_size.to_i
-      }
-    else
-      {}
+    @stored_daily_files_and_sizes ||= begin
+      if File.exists? first_last_sources_file
+        File.readlines(first_last_sources_file).each_with_object({}) { |line, result|
+          path, stored_size = line.strip.split(/ /, 2)
+          result[path] = stored_size.to_i
+        }
+      else
+        {}
+      end
     end
   end
 
