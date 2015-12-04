@@ -46,12 +46,12 @@ private
   end
 
   def remove_out_of_date_output
-    if source_files_have_changed_or_gone
+    if source_files_have_changed_or_gone?
       remove_generated_files
     end
   end
 
-  def source_files_have_changed_or_gone
+  def source_files_have_changed_or_gone?
     stored_daily_files_and_sizes.each do |path, stored_size|
       current_size = current_daily_files_and_sizes[path]
       if current_size.nil? || current_size != stored_size.to_i

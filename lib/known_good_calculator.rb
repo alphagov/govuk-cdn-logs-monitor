@@ -12,6 +12,9 @@ class KnownGoodCalculator
   attr_reader :first_last_file
   attr_reader :known_good_urls_file
 
+  # The required separation in days between the earliest and latest access to a
+  # path, in order for us to consider it for adding to the set of "known good"
+  # URLs.
   REQUIRED_SEPARATION_DAYS = 7
 
   def initialize(processed_dir)
@@ -23,7 +26,7 @@ class KnownGoodCalculator
 
   def process
     ensure_directories_exist
-    unless already_up_to_date
+    unless already_up_to_date?
       calculate_known_good_urls
     end
   end
@@ -36,7 +39,7 @@ private
     end
   end
 
-  def already_up_to_date
+  def already_up_to_date?
     (
       File.exists?(known_good_urls_file) &&
       File.mtime(known_good_urls_file) >= File.mtime(first_last_file)
