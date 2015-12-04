@@ -87,7 +87,7 @@ private
       CSV.foreach(file_path, 'r') do |row|
         _hour, path, method, status, _cdn_origin = row[0].split(' ')
         count = row[1].to_i
-        if status.match(/^[23][0-9][0-9]$/) && method == 'GET' then
+        if status.match(/^[23][0-9][0-9]$/) && method == 'GET'
           success_counts[path] += count
         end
       end
