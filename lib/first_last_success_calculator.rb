@@ -112,7 +112,7 @@ private
         last_path = nil
         last_line = nil
         stdout.each_line do |line|
-          path, _ = line.split(" ")
+          path, _date = line.split(" ")
           if path != last_path
             unless last_line.nil?
               output_file.write(last_line)
