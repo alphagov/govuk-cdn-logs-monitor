@@ -75,5 +75,4 @@ describe "Parse logfiles" do
     expect(entries.size).to eq(0)
     expect(recorded_stderr).to match("Invalid log line: incorrect number of pieces")
   end
-
 end

@@ -63,5 +63,5 @@ def write_lines(file_name, lines)
 end
 
 def read_lines(file_name)
-  File.readlines(file_name).map { |line| line.rstrip }
+  File.readlines(file_name).map(&:rstrip)
 end
