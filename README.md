@@ -1,20 +1,23 @@
 # CDN log monitor
 
-Monitor the CDN logs for GOV.UK to find problems with the site.
+Monitor the Content Delivery Network (CDN) logs for GOV.UK to find problems
+with the site.  In particular, look for cases where a URL which has been
+returning a success status changes to returning an error status.
 
 ## Technical documentation
 
-This application is a collection of shell, and Ruby, scripts that use:
+This application has two parts:
 
-- Historical and yesterday's cdn logs to calculate what pages are 'known good',
-  that is, return HTTP status 2XX.
-- The current log is used to monitor basepaths not being found, HTTP status
-  404.
+ - A process which follows incoming logs from the CDN, sending reports to
+   statsd and logstash about overall traffic patterns and problems with pages
+   which are known to have worked in the past.
+ - A process which runs nightly to count up accesses for each hour for each
+   combination of path, HTTP method, resulting HTTP status, and CDN backend
+   used to serve the request.
 
-Processed logs become CSV files that contain basepath and frequency
-details for that day. The CSV files are combined into a master list of known
-good URLs for GOV.UK.
-
+The processing of historical logs is split into several stages, to ensure that
+only the necessary additional processing is done each day.  Details of these stages are in
+[the documentation](docs/design.md).
 
 ## Testing
 
@@ -24,48 +27,23 @@ Run the unit tests with rspec:
 bundle exec rspec
 ```
 
-
 ## Dependencies
 
 - `statsd-ruby` - ruby gem, to update 404 metrics
-- `git`         - ruby gem, to have a versioned master list of good URLs
-
 
 ## Running
 
-Each script accepts `-h` option that detail what the script expects.
+`GOVUK_PROCESSED_DATA_DIR=processed_data_directory GOVUK_CDN_LOG_DIR=log_directory bundle exec ruby ./scripts/monitor_logs.rb`
 
+- Streams data from the current CDN log and compares it against the list of
+  known good pages on GOV.UK.
+- Sends statsd events about traffic levels (status codes, and CDN backends
+  used).
+- Sends statsd events and logstash events about accesses to pages which are in
+  the list of known good urls, but which have 4xx or 5xx status codes.
 
-`./process_404s.sh /cdn/log/dir /path/to/good_urls.csv`
+`GOVUK_PROCESSED_DATA_DIR=processed_data_directory GOVUK_CDN_LOG_DIR=log_directory bundle exec ruby ./scripts/process_completed_logs.rb`
 
-- Streams data from the current cdn log and compares it against the known good
-  pages (masterlist) on GOV.UK.
-- Alerts if a 404 occurs that should not.
-
-
-`./nightly_run.sh /cdn/log/dir /path/to/processed-data-dir`
-
-- Processes the latest uncompressed log file for pages returning HTTP 2XX
-  statuses.
-- Outputs the list of basepaths with a 2XX status to a csv file.
-
-
-`./process_gz_logs.sh /cdn/log/dir /path/to/processed-data-dir`
-
-- Processes all the compressed historical logs into csv files.
-
-
-`./accumulate.sh /path/to/processed-data-dir /path/to/good_urls.csv`
-
-- Should be run after `nightly_run` finishes.
-- Takes urls that are known to be good and adds them to the masterlist. The
-  details of the algorithm used are in the ruby code that `accumulate` calls
-
-
-`./owning_app.sh "/base/path"`
-
-- Outputs the name of the application that 'owns' the html content at the
-  specified basepath on gov.uk.
-
-
-![CDN monitor process flow](docs/cdn-monitor-flow.png)
+- Counts entries in all the existing logs which haven't yet been processed.
+- Updates the list of known good urls.
+- Designed to be run nightly.
