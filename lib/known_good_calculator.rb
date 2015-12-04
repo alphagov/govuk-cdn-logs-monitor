@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Process the first-last success file to produce a list of known good urls.
 #
 # A url is marked as being a known good url if it is accessed successfully at

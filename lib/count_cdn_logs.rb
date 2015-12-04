@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Count hits to each url in the log files
 #
 # Ensures that there are counts in the `<processed_dir>/raw_counts/` tree for

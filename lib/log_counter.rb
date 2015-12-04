@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Count hits to each url in a log file.
 #
 # Writes the output to file named according to the date and hour of the hits,

@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Process the daily count files to produce a list of successfully accessed urls
 # for each day.
 #
@@ -87,7 +85,7 @@ private
     Dir["#{day_dir}/count_*.csv"].sort.each do |file_path|
       $logger.info "Processing counts from #{file_path}"
       CSV.foreach(file_path, 'r') do |row|
-        hour, path, method, status, cdn_backend = row[0].split(' ')
+        _, path, method, status, _ = row[0].split(' ')
         count = row[1].to_i
         if status.match(/^[23][0-9][0-9]$/) && method == 'GET' then
           success_counts[path] += count

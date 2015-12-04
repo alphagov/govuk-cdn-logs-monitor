@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Stream lines from a log file, handling log rotation.
 
 require 'open3'

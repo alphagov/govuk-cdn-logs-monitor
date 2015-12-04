@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Process the data in completely written log files (ie, all files other than
 # the one currently being written).
 #

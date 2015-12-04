@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Process the list of successfully accessed urls for each day to produce a
 # single file containing the dates when each such url was first and last
 # accessed.
@@ -112,7 +110,7 @@ private
         last_path = nil
         last_line = nil
         stdout.each_line do |line|
-          path, date = line.split(" ")
+          path, _ = line.split(" ")
           if path != last_path
             unless last_line.nil?
               output_file.write(last_line)

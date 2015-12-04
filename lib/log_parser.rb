@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require 'date'
 require 'zlib'
 require_relative 'config_logging'

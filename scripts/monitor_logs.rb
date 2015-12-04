@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Monitor events which happen in the current log file
 #
 # Requires the following environment variables to be set:

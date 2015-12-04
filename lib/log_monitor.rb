@@ -1,5 +1,3 @@
-# coding: utf-8
-#
 # Monitor the current log file, recording interesting events to statsd and
 # logstash.
 #
