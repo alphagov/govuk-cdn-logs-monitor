@@ -15,7 +15,7 @@ describe "Finding the first and last sucessful accesses" do
   end
 
   def prepare_daily_successes(data)
-    counts_dir = "#{$tempdir}/successes"
+    "#{$tempdir}/successes"
   end
 
   it "produces two output lines for a single access" do
