@@ -17,9 +17,8 @@ class CountCdnLogs
   end
 
   def update
-    files = completed_log_files
     $logger.info "Checking #{completed_log_files.count} log files"
-    files.each do |file_path|
+    completed_log_files.each do |file_path|
       LogCounter.new(file_path, @counts_dir).ensure_counted
     end
   end
@@ -27,8 +26,10 @@ class CountCdnLogs
 private
 
   def completed_log_files
-    Dir["#{@log_dir}/cdn-govuk.log*"].reject { |name|
-      File.basename(name) == 'cdn-govuk.log'
-    }.sort
+    @completed_log_files ||= begin
+      Dir["#{@log_dir}/cdn-govuk.log*"].reject { |name|
+        File.basename(name) == 'cdn-govuk.log'
+      }.sort
+    end
   end
 end
