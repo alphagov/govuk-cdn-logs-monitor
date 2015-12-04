@@ -123,7 +123,7 @@ file from this directory.
       # files ever matching the pattern "count_*", and to ensure that failures
       # will be retried.
       temp_file = "#{output_dir}/tmp_#{base_name}.tmp"
-      write_counts_for_day(day, counts, temp_file)
+      write_counts_for_day(counts, temp_file)
 
       output_file = "#{output_dir}/count_#{base_name}.csv"
       File.rename(temp_file, output_file)
@@ -136,7 +136,7 @@ file from this directory.
     end
   end
 
-  def write_counts_for_day(day, counts, dest_file)
+  def write_counts_for_day(counts, dest_file)
     if File.exists?(dest_file)
       File.delete(dest_file)
     end
