@@ -8,7 +8,7 @@ class LogStreamer
   end
 
   def with_stream(&block)
-    Open3.popen2("tail -F -n 0 \"#{@log_file}\"") do |stdin, stdout, wait_thr|
+    Open3.popen2("tail -F -n 0 \"#{@log_file}\"") do |_stdin, stdout, wait_thr|
       begin
         block.call(stdout)
       rescue
