@@ -46,7 +46,7 @@ describe "Count logfiles" do
     counter = LogCounter.new(logfile, counts_dir)
     expect(counter.send(:already_counted?)).to be true
 
-    counts_dir, stderr = count_log(logfile)
+    _counts_dir, stderr = count_log(logfile)
     expect(stderr).to eq ""
   end
 

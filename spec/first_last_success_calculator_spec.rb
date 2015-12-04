@@ -14,10 +14,6 @@ describe "Finding the first and last sucessful accesses" do
     read_lines("#{$tempdir}/successes/first_last_sources")
   end
 
-  def prepare_daily_successes(data)
-    "#{$tempdir}/successes"
-  end
-
   it "produces two output lines for a single access" do
     write_lines("#{daily_successes_dir}/successes_20150821", [
       "/accessed_once 20150821",
