@@ -51,7 +51,7 @@ end
 
 def write_lines(file_name, lines)
   dir = File.dirname(file_name)
-  unless File.exists?(dir)
+  unless File.exist?(dir)
     FileUtils::mkdir_p dir
   end
   File.open(file_name, "ab") do |fd|

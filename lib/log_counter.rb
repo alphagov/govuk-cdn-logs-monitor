@@ -60,7 +60,7 @@ private
     ensure_directory_exists daily_dir
     ensure_directory_exists counted_dir
 
-    unless File.exists? "#{counted_dir}/README"
+    unless File.exist? "#{counted_dir}/README"
       File.open("#{counted_dir}/README", "wb") do |file|
         file << %{Counted files directory
 
@@ -78,7 +78,7 @@ file from this directory.
   end
 
   def already_counted?
-    unless File.exists?(counted_file)
+    unless File.exist?(counted_file)
       return false
     end
 
@@ -86,7 +86,7 @@ file from this directory.
   end
 
   def remove_counted_file
-    if File.exists?(counted_file)
+    if File.exist?(counted_file)
       File.delete(counted_file)
     end
   end
@@ -131,13 +131,13 @@ file from this directory.
   end
 
   def ensure_directory_exists(dir)
-    unless File.exists? dir
+    unless File.exist? dir
       Dir.mkdir dir
     end
   end
 
   def write_counts_for_day(counts, dest_file)
-    if File.exists?(dest_file)
+    if File.exist?(dest_file)
       File.delete(dest_file)
     end
 

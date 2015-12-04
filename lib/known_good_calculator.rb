@@ -34,14 +34,14 @@ class KnownGoodCalculator
 private
 
   def ensure_directories_exist
-    unless File.exists? output_dir
+    unless File.exist? output_dir
       Dir.mkdir(output_dir)
     end
   end
 
   def already_up_to_date?
     (
-      File.exists?(known_good_urls_file) &&
+      File.exist?(known_good_urls_file) &&
       File.mtime(known_good_urls_file) >= File.mtime(first_last_file)
     )
   end

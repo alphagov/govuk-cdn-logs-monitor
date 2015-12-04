@@ -34,7 +34,7 @@ private
 
   def stored_daily_files_and_sizes
     @stored_daily_files_and_sizes ||= begin
-      if File.exists? first_last_sources_file
+      if File.exist? first_last_sources_file
         File.readlines(first_last_sources_file).each_with_object({}) { |line, result|
           path, stored_size = line.strip.split(/ /, 2)
           result[path] = stored_size.to_i
@@ -63,12 +63,12 @@ private
   end
 
   def remove_generated_files
-    if File.exists? first_last_file
+    if File.exist? first_last_file
       $logger.info "Removing #{first_last_file}"
       File.unlink first_last_file
     end
 
-    if File.exists? first_last_sources_file
+    if File.exist? first_last_sources_file
       $logger.info "Removing #{first_last_sources_file}"
       File.unlink first_last_sources_file
     end
@@ -98,7 +98,7 @@ private
       $logger.info "No updated daily files"
       return
     end
-    if File.exists?(first_last_file)
+    if File.exist?(first_last_file)
       source_files << first_last_file
     end
 

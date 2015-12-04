@@ -56,7 +56,7 @@ private
   end
 
   def has_raw_count_file_and_is_up_to_date?(file_path)
-    unless File.exists?(file_path)
+    unless File.exist?(file_path)
       return false
     end
 
@@ -110,7 +110,7 @@ private
       success_counts = count_successes_for_day(day_dir)
 
       if success_counts.size == 0
-        if File.exists?(success_file)
+        if File.exist?(success_file)
           File.unlink(success_file)
         end
       else
