@@ -20,6 +20,6 @@ end
 
 log_file = "#{log_dir}/cdn-govuk.log"
 monitor = LogMonitor.new(processed_dir)
-LogStreamer.new(log_file).with_stream do |stream|
+LogTailStreamer.open(log_file) do |stream|
   monitor.monitor(stream)
 end

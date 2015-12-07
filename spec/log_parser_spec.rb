@@ -5,7 +5,7 @@ describe "Parse logfiles" do
   def parse_log_line(logline)
     logfile = "#{$tempdir}/log"
     write_lines(logfile, [logline])
-    LogParser.open(logfile).to_a
+    LogFileStreamer.open(logfile) { |stream| LogParser.new(stream).to_a }
   end
 
   it "Parses a valid log line" do
@@ -51,7 +51,7 @@ describe "Parse logfiles" do
     # zlib implementation we use handles that format correctly.
     `gzip "#{logfile}"`
 
-    entries = LogParser.open("#{logfile}.gz").to_a
+    entries = LogFileStreamer.open("#{logfile}.gz") { |stream| LogParser.new(stream).to_a }
     expect(entries.size).to eq(1)
     expect(entries[0].ip).to eq('1.1.1.1')
   end
