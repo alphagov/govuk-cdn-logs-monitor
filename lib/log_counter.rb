@@ -10,6 +10,7 @@
 require 'csv'
 require_relative 'log_counter'
 require_relative 'log_parser'
+require_relative 'log_file_streamer'
 
 class LogCounter
   FIRST_ROW_HEADING = 'Source file size'
@@ -101,12 +102,13 @@ file from this directory.
     $logger.info "Counting #{file_path} - #{file_size} bytes"
 
     counts_by_day = Hash.new { |hash, key| hash[key] = Hash.new(0) }
-    parser = LogParser.open(file_path)
-    parser.each do |entry|
-      day = entry[:time].strftime('%Y%m%d')
-      hour = entry[:time].strftime('%H')
-      key = "#{hour} #{entry[:path]} #{entry[:method]} #{entry[:status]} #{entry[:cdn_backend]}"
-      counts_by_day[day][key] += 1
+    LogFileStreamer.open(file_path) do |stream|
+      LogParser.new(stream).each do |entry|
+        day = entry[:time].strftime('%Y%m%d')
+        hour = entry[:time].strftime('%H')
+        key = "#{hour} #{entry[:path]} #{entry[:method]} #{entry[:status]} #{entry[:cdn_backend]}"
+        counts_by_day[day][key] += 1
+      end
     end
 
     counts_by_day

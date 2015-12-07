@@ -1,5 +1,4 @@
 require 'date'
-require 'zlib'
 require_relative 'config_logging'
 
 LogEntry = Struct.new(:ip, :time, :method, :path, :status, :cdn_backend)
@@ -9,10 +8,6 @@ class LogParser
 
   def initialize(stream)
     @stream = stream
-  end
-
-  def self.open(file_path)
-    LogParser.new(file_reader(file_path))
   end
 
   def each(&block)
@@ -49,13 +44,5 @@ private
       pieces[11],
       pieces[12],
     )
-  end
-
-  def self.file_reader(file_path)
-    if file_path.end_with?(".gz")
-      Zlib::GzipReader.open(file_path)
-    else
-      File.new(file_path)
-    end
   end
 end

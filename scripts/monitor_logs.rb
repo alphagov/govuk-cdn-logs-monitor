@@ -6,7 +6,7 @@
 # GOVUK_PROCESSED_DATA_DIR - directory to write proessed log data to
 
 require_relative '../lib/log_monitor'
-require_relative '../lib/log_streamer'
+require_relative '../lib/log_tail_streamer'
 
 log_dir = ENV.fetch("GOVUK_CDN_LOG_DIR", "")
 processed_dir = ENV.fetch("GOVUK_PROCESSED_DATA_DIR", "")
@@ -20,6 +20,6 @@ end
 
 log_file = "#{log_dir}/cdn-govuk.log"
 monitor = LogMonitor.new(processed_dir)
-LogStreamer.new(log_file).with_stream do |stream|
+LogTailStreamer.open(log_file) do |stream|
   monitor.monitor(stream)
 end
