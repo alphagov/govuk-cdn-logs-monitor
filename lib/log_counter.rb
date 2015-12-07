@@ -10,7 +10,7 @@
 require 'csv'
 require_relative 'log_counter'
 require_relative 'log_parser'
-require_relative 'log_streamer'
+require_relative 'log_file_streamer'
 
 class LogCounter
   FIRST_ROW_HEADING = 'Source file size'

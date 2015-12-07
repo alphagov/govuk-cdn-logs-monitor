@@ -1,27 +1,4 @@
-# Stream lines from a log file, handling log rotation.
-
-require 'open3'
-
-class ProcessStreamer
-  def self.open(command)
-    Open3.popen2(*command) do |_stdin, stdout, wait_thr|
-      begin
-        yield stdout
-      rescue
-        wait_thr.kill
-        raise
-      end
-    end
-  end
-end
-
-class LogTailStreamer
-  def self.open(log_file)
-    ProcessStreamer.open(["/usr/bin/tail", "-F", "-n", "0", log_file]) do |stream|
-      yield stream
-    end
-  end
-end
+require_relative 'process_streamer'
 
 class LogFileStreamer
   def initialize(log_file, block)

@@ -6,7 +6,7 @@
 # GOVUK_PROCESSED_DATA_DIR - directory to write proessed log data to
 
 require_relative '../lib/log_monitor'
-require_relative '../lib/log_streamer'
+require_relative '../lib/log_tail_streamer'
 
 log_dir = ENV.fetch("GOVUK_CDN_LOG_DIR", "")
 processed_dir = ENV.fetch("GOVUK_PROCESSED_DATA_DIR", "")

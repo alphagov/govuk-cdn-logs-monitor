@@ -1,6 +1,5 @@
 require 'date'
 require_relative 'config_logging'
-require_relative 'log_streamer'
 
 LogEntry = Struct.new(:ip, :time, :method, :path, :status, :cdn_backend)
 
