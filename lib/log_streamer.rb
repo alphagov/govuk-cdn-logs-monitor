@@ -24,25 +24,34 @@ class LogTailStreamer
 end
 
 class LogFileStreamer
+  def initialize(log_file, block)
+    @log_file = log_file
+    @block = block
+  end
+
   def self.open(log_file, &block)
-    if log_file.end_with?(".gz")
-      stream_gz_file(log_file, block)
+    LogFileStreamer.new(log_file, block).stream
+  end
+
+  def stream
+    if @log_file.end_with?(".gz")
+      stream_gz_file
     else
-      stream_uncompressed_file(log_file, block)
+      stream_uncompressed_file
     end
   end
 
 private
 
-  def self.stream_uncompressed_file(log_file, block)
-    File.open(log_file) do |stream|
-      block.call(stream)
+  def stream_uncompressed_file
+    File.open(@log_file) do |stream|
+      @block.call(stream)
     end
   end
 
-  def self.stream_gz_file(log_file, block)
-    ProcessStreamer.open(["gunzip", "-c", log_file]) do |stream|
-      block.call(stream)
+  def stream_gz_file
+    ProcessStreamer.open(["gunzip", "-c", @log_file]) do |stream|
+      @block.call(stream)
     end
   end
 end
