@@ -136,7 +136,9 @@ file from this directory.
 
   def sort_file
     $logger.info "Sorting #{temp_parsed_file}"
-    system({"LC_ALL" => "C"}, "sort", "-o", temp_sorted_file, temp_parsed_file)
+    unless system({"LC_ALL" => "C"}, "sort", "-o", temp_sorted_file, temp_parsed_file)
+      raise "Failed to sort #{temp_parsed_file}"
+    end
   end
 
   class ItemCounter
@@ -188,7 +190,9 @@ file from this directory.
     def finish_output_file
       unless @csv_writer.nil?
         @csv_writer.close
-        system({"LC_ALL" => "C"}, "gzip", @temp_output_file)
+        unless system({"LC_ALL" => "C"}, "gzip", @temp_output_file)
+          raise "Failed to gzip #{@temp_output_file}"
+        end
         File.rename("#{@temp_output_file}.gz", @output_file)
       end
     end
