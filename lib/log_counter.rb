@@ -205,19 +205,4 @@ file from this directory.
       Dir.mkdir dir
     end
   end
-
-  def filter_counts(counts)
-    counts.reject { |key, count|
-      path = key.split[3]
-      # Reject some paths which might contain personal information, if they've
-      # not been accessed frequently:
-      #  - smart answer paths include a /y/ section before the answers to
-      #  questions.
-      #  - things like searches contain query strings
-      #
-      count < 10 && (
-        path.include?("/y/") || path.include("?")
-      )
-    }
-  end
 end
