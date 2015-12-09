@@ -82,13 +82,15 @@ private
 
   def count_successes_for_day(day_dir)
     success_counts = Hash.new(0)
-    Dir["#{day_dir}/count_*.csv"].sort.each do |file_path|
+    Dir["#{day_dir}/count_*.csv.gz"].sort.each do |file_path|
       $logger.info "Processing counts from #{file_path}"
-      CSV.foreach(file_path, 'r') do |row|
-        _hour, path, method, status, _cdn_origin = row[0].split(' ')
-        count = row[1].to_i
-        if status.match(/^[23][0-9][0-9]$/) && method == 'GET'
-          success_counts[path] += count
+      ProcessStreamer.open(["gunzip", "-c", file_path]) do |stream|
+        CSV.new(stream).each do |row|
+          _hour, path, method, status, _cdn_origin = row[0].split(' ')
+          count = row[1].to_i
+          if status.match(/^[23][0-9][0-9]$/) && method == 'GET'
+            success_counts[path] += count
+          end
         end
       end
     end

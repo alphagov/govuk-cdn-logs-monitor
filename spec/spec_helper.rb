@@ -54,14 +54,26 @@ def write_lines(file_name, lines)
   unless File.exist?(dir)
     FileUtils::mkdir_p dir
   end
-  File.open(file_name, "ab") do |fd|
+  if file_name.end_with? '.gz'
+    unzipped_name = file_name.sub(/.gz$/, '')
+  else
+    unzipped_name = file_name
+  end
+  File.open(unzipped_name, "ab") do |fd|
     lines.each do |line|
       fd.write line
       fd.write "\n"
     end
   end
+  if file_name.end_with? '.gz'
+    `gzip "#{unzipped_name}"`
+  end
 end
 
 def read_lines(file_name)
-  File.readlines(file_name).map(&:rstrip)
+  if file_name.end_with?('.gz')
+    `gunzip -c "#{file_name}"`.split("\n").map(&:rstrip)
+  else
+    File.readlines(file_name).map(&:rstrip)
+  end
 end

@@ -2,9 +2,14 @@ require 'open3'
 
 class ProcessStreamer
   def self.open(command)
-    Open3.popen2(*command) do |_stdin, stdout, wait_thr|
+    Open3.popen2({"LC_ALL" => "C"}, *command) do |_stdin, stdout, wait_thr|
       begin
-        yield stdout
+        result = yield stdout
+        exit_status = wait_thr.value
+        unless exit_status
+          raise "Command #{command} failed with exit status #{exit_status}"
+        end
+        result
       rescue
         wait_thr.kill
         raise

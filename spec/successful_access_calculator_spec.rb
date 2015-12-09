@@ -15,7 +15,7 @@ describe "Finding successful accesses" do
   end
 
   it "Finds the 2xx and 3xx accesses" do
-    write_lines("#{counts_dir}/#{default_day}/count_1.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /a-200-url GET 200 origin,1',
       '05 /a-201-url GET 201 origin,1',
       '05 /a-301-url GET 301 origin,1',
@@ -36,7 +36,7 @@ describe "Finding successful accesses" do
 
 
   it "Filters out smartanswers which visited fewer than 10 times in a day" do
-    write_lines("#{counts_dir}/#{default_day}/count_1.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /smartanswer/y/count-9 GET 200 origin,9',
       '05 /smartanswer/y/count-10 GET 200 origin,10',
     ])
@@ -51,7 +51,7 @@ describe "Finding successful accesses" do
   end
 
   it "Filters out urls with query strings visited fewer than 10 times in a day" do
-    write_lines("#{counts_dir}/#{default_day}/count_1.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /search?q=unusual GET 200 origin,9',
       '05 /search?q=tax GET 200 origin,10',
     ])
@@ -66,7 +66,7 @@ describe "Finding successful accesses" do
   end
 
   it "Adds up counts from separate hours in a day" do
-    write_lines("#{counts_dir}/#{default_day}/count_1.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /smartanswer/y/count-5 GET 200 origin,5',
       '06 /smartanswer/y/count-5 GET 200 origin,5',
     ])
@@ -82,10 +82,10 @@ describe "Finding successful accesses" do
   end
 
   it "Adds up counts from separate count files in a day" do
-    write_lines("#{counts_dir}/#{default_day}/count_1.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /smartanswer/y/count GET 200 origin,5',
     ])
-    write_lines("#{counts_dir}/#{default_day}/count_2.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_2.csv.gz", [
       '06 /smartanswer/y/count GET 200 origin,7',
     ])
 
@@ -101,10 +101,10 @@ describe "Finding successful accesses" do
   end
 
   it "Doesn't add up counts from separate days" do
-    write_lines("#{counts_dir}/#{default_day}/count_1.csv", [
+    write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /smartanswer/y/count GET 200 origin,5',
     ])
-    write_lines("#{counts_dir}/20150822/count_2.csv", [
+    write_lines("#{counts_dir}/20150822/count_2.csv.gz", [
       '06 /smartanswer/y/count GET 200 origin,7',
     ])
 
