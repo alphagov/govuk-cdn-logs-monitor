@@ -10,10 +10,6 @@ describe "Count logfiles" do
     [counts_dir, recorded_stderr]
   end
 
-  def read_counts(count_file)
-    File.readlines(count_file).map(&:strip)
-  end
-
   it "Counts a sample log file" do
     logfile = "#{$tempdir}/log"
     write_lines(logfile, [
@@ -25,12 +21,12 @@ describe "Count logfiles" do
     ])
 
     counts_dir, _stderr = count_log(logfile)
-    expect(read_counts("#{counts_dir}/daily/20150821/count_log.csv")).to eq([
+    expect(read_lines("#{counts_dir}/daily/20150821/count_log.csv.gz")).to eq([
       "05 /a-url GET 200 origin,2",
       "05 /another-url GET 200 origin,1",
       "06 /a-url GET 200 origin,1",
     ])
-    expect(read_counts("#{counts_dir}/daily/20150822/count_log.csv")).to eq([
+    expect(read_lines("#{counts_dir}/daily/20150822/count_log.csv.gz")).to eq([
       "05 /a-url GET 200 origin,1",
     ])
   end

@@ -136,7 +136,7 @@ file from this directory.
 
   def sort_file
     $logger.info "Sorting #{temp_parsed_file}"
-    ProcessStreamer.open(["sort", "-o", temp_sorted_file, temp_parsed_file]) do |stream| end
+    system({"LC_ALL" => "C"}, "sort", "-o", temp_sorted_file, temp_parsed_file)
   end
 
   class ItemCounter
@@ -176,7 +176,7 @@ file from this directory.
     def start_output_file(day)
       output_dir = "#{daily_dir}/#{day}"
       FileUtils::mkdir_p output_dir
-      @output_file = "#{output_dir}/count_#{base_name}.csv"
+      @output_file = "#{output_dir}/count_#{base_name}.csv.gz"
       @temp_output_file = "#{output_dir}/tmp_#{base_name}.tmp"
       if File.exist?(@temp_output_file)
         File.delete(@temp_output_file)
@@ -188,7 +188,8 @@ file from this directory.
     def finish_output_file
       unless @csv_writer.nil?
         @csv_writer.close
-        File.rename(@temp_output_file, @output_file)
+        system({"LC_ALL" => "C"}, "gzip", @temp_output_file)
+        File.rename("#{@temp_output_file}.gz", @output_file)
       end
     end
   end
