@@ -121,7 +121,7 @@ file from this directory.
   end
 
   def parse_file
-    $logger.info "Counting #{file_path} - #{file_size} bytes"
+    $logger.info "Parsing #{file_path} - #{file_size} bytes"
 
     File.open(temp_parsed_file, "wb") do |out_fd|
       LogFileStreamer.open(file_path) do |stream|
@@ -135,43 +135,68 @@ file from this directory.
   end
 
   def sort_file
+    $logger.info "Sorting #{temp_parsed_file}"
     ProcessStreamer.open(["sort", "-o", temp_sorted_file, temp_parsed_file]) do |stream| end
   end
 
-  def count_file
-    ProcessStreamer.open(["uniq", "-c", temp_sorted_file]) do |stream|
-      last_day = nil
-      output_file = nil
-      csv_writer = nil
-      temp_output_file = nil
+  class ItemCounter
+    attr_reader :stream
+    attr_reader :daily_dir
+    attr_reader :base_name
 
+    def initialize(stream, daily_dir, base_name)
+      @stream = stream
+      @daily_dir = daily_dir
+      @base_name = base_name
+
+      @csv_writer = nil
+      @output_file = nil
+      @temp_output_file = nil
+    end
+
+    def count
+      last_day = nil
       stream.each_line do |line|
         line = line.strip
         count, day, data = line.strip.split(/ /, 3)
 
         if day != last_day
-          output_dir = "#{daily_dir}/#{day}"
-          ensure_directory_exists(output_dir)
-          unless csv_writer.nil?
-            csv_writer.close
-            File.rename(temp_output_file, output_file)
-          end
-          output_file = "#{output_dir}/count_#{base_name}.csv"
-          $logger.info "Writing counts for #{output_file}"
-          temp_output_file = "#{output_dir}/tmp_#{base_name}.tmp"
-          if File.exist?(temp_output_file)
-            File.delete(temp_output_file)
-          end
-          csv_writer = CSV.open(temp_output_file, "wb", encoding: 'UTF-8')
+          finish_output_file
+          @csv_writer = start_output_file(day)
         end
         last_day = day
 
-        csv_writer << [data, count]
+        @csv_writer << [data, count]
       end
-      unless csv_writer.nil?
-        csv_writer.close
-        File.rename(temp_output_file, output_file)
+      finish_output_file
+    end
+
+  private
+
+    def start_output_file(day)
+      output_dir = "#{daily_dir}/#{day}"
+      FileUtils::mkdir_p output_dir
+      @output_file = "#{output_dir}/count_#{base_name}.csv"
+      @temp_output_file = "#{output_dir}/tmp_#{base_name}.tmp"
+      if File.exist?(@temp_output_file)
+        File.delete(@temp_output_file)
       end
+      $logger.info "Writing counts for #{@output_file}"
+      CSV.open(@temp_output_file, "wb", encoding: 'UTF-8')
+    end
+
+    def finish_output_file
+      unless @csv_writer.nil?
+        @csv_writer.close
+        File.rename(@temp_output_file, @output_file)
+      end
+    end
+  end
+
+  def count_file
+    $logger.info "Counting #{temp_sorted_file}"
+    ProcessStreamer.open(["uniq", "-c", temp_sorted_file]) do |stream|
+      ItemCounter.new(stream, daily_dir, base_name).count
     end
   end
 
