@@ -14,7 +14,7 @@ describe "Finding successful accesses" do
     "20150821"
   end
 
-  it "Finds the 2xx and 3xx accesses" do
+  it "Finds the 2xx accesses" do
     write_lines("#{counts_dir}/#{default_day}/count_1.csv.gz", [
       '05 /a-200-url GET 200 origin,1',
       '05 /a-201-url GET 201 origin,1',
@@ -30,7 +30,6 @@ describe "Finding successful accesses" do
     expect(read_lines("#{daily_successes_dir}/successes_#{default_day}")).to eq([
       "/a-200-url #{default_day}",
       "/a-201-url #{default_day}",
-      "/a-301-url #{default_day}",
     ])
   end
 
