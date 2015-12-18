@@ -62,4 +62,23 @@ describe "Finding the first and last sucessful accesses" do
     expect(recorded_stderr).to match("#{daily_successes_dir}/successes_20150822")
     expect(recorded_stderr).to match("#{daily_successes_dir}/successes_20150828")
   end
+
+  it "uses bytewise sorting" do
+    write_lines("#{daily_successes_dir}/successes_20150821", [
+      "/a-url 20150821",
+      "//a-url 20150821",
+      "/a-url 20150822",
+      "//a-url 20150822",
+    ])
+
+    record_stderr
+    FirstLastSuccessCalculator.new($tempdir).process
+
+    expect(first_last).to eq([
+      "//a-url 20150821",
+      "//a-url 20150822",
+      "/a-url 20150821",
+      "/a-url 20150822",
+    ])
+  end
 end
