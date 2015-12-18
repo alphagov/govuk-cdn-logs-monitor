@@ -105,7 +105,7 @@ private
     $logger.info "Calculating first and last access times from:\n - #{source_files.join "\n - "}"
     temp_first_last_file = "#{first_last_file}.tmp"
     File.open(temp_first_last_file, "wb") do |output_file|
-      Open3.popen2("sort --files0-from=-") do |stdin, stdout, wait_thr|
+      Open3.popen2({"LC_ALL" => "C"}, "sort --files0-from=-") do |stdin, stdout, wait_thr|
         stdin.write(source_files.join("\0"))
         stdin.close
 
