@@ -7,7 +7,7 @@ class LogstashSender
   end
 
 private
-  def logstash_format_json(logline, type)
+  def logstash_format_json(logline, tags)
     uri = URI.parse(logline.path)
     JSON.generate({
       "@fields" => {
@@ -17,8 +17,9 @@ private
         "status" => logline.status.to_i,
         "remote_addr" => logline[0],
         "request" => "#{logline.method} #{logline.path}",
+        "cdn_backend" => logline.cdn_backend,
         "length" => "-"},
-        "@tags" => [type],
+        "@tags" => tags,
         "@timestamp" => logline.time.iso8601,
         "@version" => "1"
     })

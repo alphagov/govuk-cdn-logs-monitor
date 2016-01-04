@@ -36,7 +36,7 @@ private
 
   def handle_entry(log_entry)
     log_access(log_entry)
-    check_fails_of_known_good(log_entry)
+    check_fails(log_entry)
   end
 
   def log_access(log_entry)
@@ -47,13 +47,28 @@ private
     end
   end
 
-  def check_fails_of_known_good(log_entry)
-    return if log_entry.status =~ /^[123]..$/
-
-    if @known_good_urls.include?(log_entry.path)
+  def check_fails(log_entry)
+    logstash_tags = []
+    if known_good_fail?(log_entry)
       statsd_sender.increment("known_good_fail.status_#{log_entry.status}")
-      logstash_sender.log(log_entry, "known_good_fail")
+      logstash_tags << "known_good_fail"
     end
+
+    if cdn_fall_back?(log_entry)
+      logstash_tags << "cdn_fallback"
+    end
+
+    unless logstash_tags.empty?
+      logstash_sender.log(log_entry, logstash_tags)
+    end
+  end
+
+  def known_good_fail?(log_entry)
+    log_entry.status !~ /^[123]..$/ and @known_good_urls.include?(log_entry.path)
+  end
+
+  def cdn_fall_back?(log_entry)
+    !(log_entry.cdn_backend.nil? || ["", "origin"].include?(log_entry.cdn_backend))
   end
 
   def recheck_due
