@@ -6,9 +6,9 @@ describe "Monitoring incoming logs" do
     write_lines("#{$tempdir}/output/known_good_urls", lines)
   end
 
-  def write_log(entries)
+  def write_log(entries, backend="origin")
     write_lines("#{$tempdir}/log", entries.map { |url_and_status|
-      %{1.1.1.1 "-" "-" Fri, 29 Aug 2015 05:57:21 GMT GET #{url_and_status} origin}
+      %{1.1.1.1 "-" "-" Fri, 29 Aug 2015 05:57:21 GMT GET #{url_and_status} #{backend}}
     })
   end
 
@@ -56,7 +56,7 @@ describe "Monitoring incoming logs" do
 
     expect(recorded_stderr).to match("Working with 1 known good urls")
     expect(recorded_stdout).to eq(
-      %{{"@fields":{"method":"GET","path":"/a-url","query_string":null,"status":500,"remote_addr":"1.1.1.1","request":"GET /a-url","length":"-"},"@tags":["known_good_fail"],"@timestamp":"2015-08-29T05:57:21+00:00","@version":"1"}\n}
+      %{{"@fields":{"method":"GET","path":"/a-url","query_string":null,"status":500,"remote_addr":"1.1.1.1","request":"GET /a-url","cdn_backend":"origin","length":"-"},"@tags":["known_good_fail"],"@timestamp":"2015-08-29T05:57:21+00:00","@version":"1"}\n}
     )
   end
 
@@ -96,7 +96,6 @@ describe "Monitoring incoming logs" do
     expect(recorded_stdout).to eq("")
   end
 
-
   it "Sends the query string in logstash monitoring" do
     write_known_good(["/a-url?foo"])
     write_log(["/a-url?foo 401"])
@@ -114,6 +113,25 @@ describe "Monitoring incoming logs" do
 
     expect(recorded_stderr).to match("Working with 1 known good urls")
     expect(recorded_stdout).to eq(
-      %{{"@fields":{"method":"GET","path":"/a-url","query_string":"foo","status":401,"remote_addr":"1.1.1.1","request":"GET /a-url?foo","length":"-"},"@tags":["known_good_fail"],"@timestamp":"2015-08-29T05:57:21+00:00","@version":"1"}\n})
+      %{{"@fields":{"method":"GET","path":"/a-url","query_string":"foo","status":401,"remote_addr":"1.1.1.1","request":"GET /a-url?foo","cdn_backend":"origin","length":"-"},"@tags":["known_good_fail"],"@timestamp":"2015-08-29T05:57:21+00:00","@version":"1"}\n})
+  end
+
+  it "Sends output about accesses which aren't served by origin" do
+    write_known_good(["/a-url"])
+    write_log(["/a-url 200"], "mirror1")
+
+    monitor = LogMonitor.new($tempdir)
+    expect_statsd_increments(monitor, [
+      "status.200",
+      "cdn_backend.mirror1",
+    ])
+
+    record_stderr
+    record_stdout
+    monitor.monitor(File.open("#{$tempdir}/log"))
+
+    expect(recorded_stderr).to match("Working with 1 known good urls")
+    expect(recorded_stdout).to eq(
+      %{{"@fields":{"method":"GET","path":"/a-url","query_string":null,"status":200,"remote_addr":"1.1.1.1","request":"GET /a-url","cdn_backend":"mirror1","length":"-"},"@tags":["cdn_fallback"],"@timestamp":"2015-08-29T05:57:21+00:00","@version":"1"}\n})
   end
 end
