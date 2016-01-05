@@ -64,11 +64,19 @@ private
   end
 
   def known_good_fail?(log_entry)
-    log_entry.status !~ /^[123]..$/ and @known_good_urls.include?(log_entry.path)
+    status_code_is_failure?(log_entry) && path_is_known_good?(log_entry)
+  end
+
+  def status_code_is_failure?(log_entry)
+    log_entry.status !~ /^[123][0-9][0-9]$/
+  end
+
+  def path_is_known_good?(log_entry)
+    @known_good_urls.include?(log_entry.path)
   end
 
   def cdn_fall_back?(log_entry)
-    !(log_entry.cdn_backend.nil? || ["", "origin"].include?(log_entry.cdn_backend))
+    ! [nil, "", "origin"].include?(log_entry.cdn_backend)
   end
 
   def recheck_due
