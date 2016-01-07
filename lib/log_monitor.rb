@@ -64,6 +64,11 @@ private
   end
 
   def known_good_fail?(log_entry)
+    unless log_entry.method == "GET"
+      # Our list of known good urls is only for GET requests, so ignore any
+      # non-GET requests for this monitoring.
+      return false
+    end
     status_code_is_failure?(log_entry) && path_is_known_good?(log_entry)
   end
 

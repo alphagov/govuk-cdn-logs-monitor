@@ -6,9 +6,9 @@ describe "Monitoring incoming logs" do
     write_lines("#{$tempdir}/output/known_good_urls", lines)
   end
 
-  def write_log(entries, backend="origin")
+  def write_log(entries, backend="origin", method="GET")
     write_lines("#{$tempdir}/log", entries.map { |url_and_status|
-      %{1.1.1.1 "-" "-" Fri, 29 Aug 2015 05:57:21 GMT GET #{url_and_status} #{backend}}
+      %{1.1.1.1 "-" "-" Fri, 29 Aug 2015 05:57:21 GMT #{method} #{url_and_status} #{backend}}
     })
   end
 
@@ -39,7 +39,7 @@ describe "Monitoring incoming logs" do
     expect(recorded_stdout).to eq("")
   end
 
-  it "Sends output about unsuccessful accesses to known urls" do
+  it "Sends output about unsuccessful GET accesses to known urls" do
     write_known_good(["/a-url"])
     write_log(["/a-url 500"])
 
@@ -58,6 +58,24 @@ describe "Monitoring incoming logs" do
     expect(recorded_stdout).to eq(
       %{{"@fields":{"method":"GET","path":"/a-url","query_string":null,"status":500,"remote_addr":"1.1.1.1","request":"GET /a-url","cdn_backend":"origin","length":"-"},"@tags":["known_good_fail"],"@timestamp":"2015-08-29T05:57:21+00:00","@version":"1"}\n}
     )
+  end
+
+  it "Doesn't send output about unsuccessful POST accesses to known urls" do
+    write_known_good(["/a-url"])
+    write_log(["/a-url 500"], "origin", "POST")
+
+    monitor = LogMonitor.new($tempdir)
+    expect_statsd_increments(monitor, [
+      "status.500",
+      "cdn_backend.origin",
+    ])
+
+    record_stderr
+    record_stdout
+    monitor.monitor(File.open("#{$tempdir}/log"))
+
+    expect(recorded_stderr).to match("Working with 1 known good urls")
+    expect(recorded_stdout).to eq("")
   end
 
   it "Sends output about successful accesses to unknown urls" do
