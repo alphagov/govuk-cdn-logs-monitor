@@ -61,7 +61,7 @@ private
           last_date = Date.iso8601(last_day)
           elapsed_days = (last_date - first_date).to_i
           if elapsed_days >= REQUIRED_SEPARATION_DAYS
-            outfd.write "#{path}\n"
+            outfd.write "#{path} #{last_day}\n"
           end
         end
       end

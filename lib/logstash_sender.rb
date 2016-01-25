@@ -2,12 +2,12 @@ require 'uri'
 require 'json'
 
 class LogstashSender
-  def log(logline, type)
-    $stdout.puts logstash_format_json(logline, type)
+  def log(logline, tags, last_success)
+    $stdout.puts logstash_format_json(logline, tags, last_success)
   end
 
 private
-  def logstash_format_json(logline, tags)
+  def logstash_format_json(logline, tags, last_success)
     uri = URI.parse(logline.path)
     JSON.generate({
       "@fields" => {
@@ -18,10 +18,11 @@ private
         "remote_addr" => logline[0],
         "request" => "#{logline.method} #{logline.path}",
         "cdn_backend" => logline.cdn_backend,
-        "length" => "-"},
-        "@tags" => tags,
-        "@timestamp" => logline.time.iso8601,
-        "@version" => "1"
+        "last_success" => last_success
+      },
+      "@tags" => tags,
+      "@timestamp" => logline.time.iso8601,
+      "@version" => "1"
     })
   end
 end
