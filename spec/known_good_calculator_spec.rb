@@ -20,7 +20,7 @@ describe "Calculating a list of known good accesses" do
     KnownGoodCalculator.new($tempdir).process
 
     expect(read_lines(known_good_urls_file)).to eq([
-      '/a-url',
+      '/a-url 20150101',
     ])
     expect(recorded_stderr).to match("Calculating known good urls")
   end

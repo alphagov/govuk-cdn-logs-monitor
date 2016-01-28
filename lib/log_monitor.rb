@@ -49,35 +49,38 @@ private
 
   def check_fails(log_entry)
     logstash_tags = []
-    if known_good_fail?(log_entry)
-      statsd_sender.increment("known_good_fail.status_#{log_entry.status}")
-      logstash_tags << "known_good_fail"
+    last_success = nil
+
+    if log_entry.method == "GET"
+      # Our list of known good urls is only for GET requests, so ignore any
+      # non-GET requests for this bit of monitoring.
+      last_success = last_success_date(log_entry)
+
+      if status_code_is_failure?(log_entry) && last_success != nil
+        statsd_sender.increment("known_good_fail.status_#{log_entry.status}")
+        logstash_tags << "known_good_fail"
+
+        if (log_entry.time - last_success).to_i < 7
+          statsd_sender.increment("recent_known_good_fail.status_#{log_entry.status}")
+          logstash_tags << "recent_known_good_fail"
+        end
+      end
     end
 
-    if cdn_fall_back?(log_entry)
-      logstash_tags << "cdn_fallback"
-    end
+    logstash_tags << "cdn_fallback" if cdn_fall_back?(log_entry)
 
-    unless logstash_tags.empty?
-      logstash_sender.log(log_entry, logstash_tags)
-    end
+    logstash_sender.log(log_entry, logstash_tags, last_success) unless logstash_tags.empty?
   end
 
-  def known_good_fail?(log_entry)
-    unless log_entry.method == "GET"
-      # Our list of known good urls is only for GET requests, so ignore any
-      # non-GET requests for this monitoring.
-      return false
+  def last_success_date(log_entry)
+    date = known_good_urls[log_entry.path]
+    unless date.nil?
+      DateTime.iso8601(date)
     end
-    status_code_is_failure?(log_entry) && path_is_known_good?(log_entry)
   end
 
   def status_code_is_failure?(log_entry)
     log_entry.status !~ /^[123][0-9][0-9]$/
-  end
-
-  def path_is_known_good?(log_entry)
-    @known_good_urls.include?(log_entry.path)
   end
 
   def cdn_fall_back?(log_entry)
@@ -101,16 +104,23 @@ private
     unless mtime == @known_good_urls_mtime
       @known_good_urls = read_known_good_urls
       @known_good_urls_mtime = mtime
-      $logger.info "Working with #{@known_good_urls.size} known good urls"
+      $logger.info "Working with #{known_good_urls.size} known good urls"
     end
   end
 
   def read_known_good_urls
     $logger.info "Reading set of known good urls"
-    urls = Set.new
+    urls = {}
     File.open(@known_good_urls_file) do |fd|
       fd.each_line do |line|
-        urls.add line.strip
+        url, _, last_success = line.strip.rpartition(' ')
+        if url == ''
+          # This case is here to keep the monitor running with the old-format
+          # "known_urls" file which didn't contain a date.
+          url = last_success
+          last_success = '20140101'
+        end
+        urls[url] = last_success
       end
     end
     urls
