@@ -32,8 +32,8 @@ private
 
   def parse_line(line)
     pieces = line.split
-    if pieces.size < 12 || pieces.size > 13
-      raise ArgumentError.new("incorrect number of pieces")
+    if pieces.size < 12
+      raise ArgumentError.new("Less log line elements than we expect")
     end
     datetime = DateTime.parse(pieces.slice(3..8).join(' ')).new_offset
     LogEntry.new(
