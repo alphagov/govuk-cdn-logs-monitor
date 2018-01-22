@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'rspec'
+require 'tmpdir'
 
 RSpec.configure do |config|
   config.before(:each) do
