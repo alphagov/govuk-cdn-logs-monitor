@@ -1,5 +1,7 @@
 # CDN log monitor
 
+**This project is archived and no longer run on GOV.UK as per [RFC-93](https://github.com/alphagov/govuk-rfcs/blob/master/rfc-093-retire-govuk-cdn-logs-monitor.md)** 
+
 Monitor the Content Delivery Network (CDN) logs for GOV.UK to find problems
 with the site.  In particular, look for cases where a URL which has been
 returning a success status changes to returning an error status.
